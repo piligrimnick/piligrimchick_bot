@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.piligrimchick.bot.application.TelegramMessageHandler;
+import com.piligrimchick.domain.IncomingMessage;
 
 public class NatsPublisher {
     private static final Logger logger = LoggerFactory.getLogger(TelegramMessageHandler.class);
@@ -35,7 +36,7 @@ public class NatsPublisher {
         throw new IllegalStateException("Unexpected error: NATS connection logic exited loop");
     }
 
-    public void publish(String queue, String message) {
+    public void publish(String queue, IncomingMessage message) {
         try {
             connection.publish(queue, message.getBytes());
             logger.info("Published to {}: {}", queue, message);
