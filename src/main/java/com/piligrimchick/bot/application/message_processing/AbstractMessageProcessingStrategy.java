@@ -12,7 +12,6 @@ public abstract class AbstractMessageProcessingStrategy implements MessageProces
     }
 
     protected void publishToNats(String queue, String payload) {
-        System.out.println("Publishing to " + queue + ": " + payload);
         natsPublisher.publish(queue, payload);
     }
 

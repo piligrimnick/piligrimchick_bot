@@ -3,13 +3,18 @@ package com.piligrimchick.shared.infrastructure;
 import io.nats.client.Connection;
 import io.nats.client.Nats;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.piligrimchick.bot.application.TelegramMessageHandler;
 
 public class NatsPublisher {
+    private static final Logger logger = LoggerFactory.getLogger(TelegramMessageHandler.class);
     private final Connection connection;
 
     public NatsPublisher(String natsUrl) throws InterruptedException {
         this.connection = connectWithRetry(natsUrl, 3, 2000);
-        System.out.println("Connected to NATS: " + natsUrl);
+        logger.info("Connected to NATS: {}", natsUrl);
     }
 
     private Connection connectWithRetry(String natsUrl, int maxRetries, int delayMs) throws InterruptedException {
@@ -19,7 +24,8 @@ public class NatsPublisher {
                 return Nats.connect(natsUrl);
             } catch (IOException e) {
                 attempt++;
-                System.err.println("Failed to connect to NATS (attempt " + attempt + "/" + maxRetries + ")");
+                logger.error("Failed to connect to NATS (attempt {}/{})", attempt, maxRetries);
+
                 if (attempt >= maxRetries) {
                     throw new IllegalStateException("Could not connect to NATS after " + maxRetries + " attempts", e);
                 }
@@ -32,7 +38,8 @@ public class NatsPublisher {
     public void publish(String queue, String message) {
         try {
             connection.publish(queue, message.getBytes());
-            System.out.println("Published to " + queue + ": " + message);
+            logger.info("Published to {}: {}", queue, message);
+
         } catch (Exception e) {
             throw new IllegalStateException("Failed to publish message to NATS", e);
         }
