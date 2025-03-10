@@ -30,3 +30,18 @@ dependencies {
 tasks.named('test') {
 	enabled = false
 }
+
+tasks.register('runBot', JavaExec) {
+    group = "application"
+    description = "Run BotApplication"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.piligrimchick.bot.BotApplication'
+}
+
+tasks.register('runTextPipeline', JavaExec) {
+    group = "application"
+    description = "Run TextPipelineApplication"
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.piligrimchick.text_pipeline.TextPipelineApplication'
+}
+

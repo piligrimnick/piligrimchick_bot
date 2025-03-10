@@ -1,1 +1,3 @@
-rootProject.name = 'demo'
+rootProject.name = 'piligrimchick'
+
+include 'bot', 'text_pipeline'
