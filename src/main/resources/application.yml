@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: piligrimchick_bot
+
+bot:
+  token: ${TELEGRAM_BOT_TOKEN}
+  username: ${TELEGRAM_BOT_USERNAME}
+  nats:
+    url: "nats://localhost:4222"
