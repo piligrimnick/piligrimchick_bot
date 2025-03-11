@@ -3,12 +3,14 @@ package com.piligrimchick.bot.application;
 import com.piligrimchick.bot.application.message_processing.MessageProcessingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
 
 @Component
+@DependsOn("natsStreamsInitializer")
 public class TelegramMessageHandler {
     private static final Logger logger = LoggerFactory.getLogger(TelegramMessageHandler.class);
     private final List<MessageProcessingStrategy> strategies;

@@ -1,48 +1,34 @@
 package com.piligrimchick.shared.infrastructure;
 
-import io.nats.client.Connection;
-import io.nats.client.Nats;
-import java.io.IOException;
+import io.nats.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.piligrimchick.bot.application.TelegramMessageHandler;
 import com.piligrimchick.domain.IncomingMessage;
+import java.io.IOException;
+
+import java.nio.charset.StandardCharsets;
 
 public class NatsPublisher {
     private static final Logger logger = LoggerFactory.getLogger(TelegramMessageHandler.class);
-    private final Connection connection;
+    private final JetStream js;
 
-    public NatsPublisher(String natsUrl) throws InterruptedException {
-        this.connection = connectWithRetry(natsUrl, 3, 2000);
-        logger.info("Connected to NATS: {}", natsUrl);
-    }
-
-    private Connection connectWithRetry(String natsUrl, int maxRetries, int delayMs) throws InterruptedException {
-        int attempt = 0;
-        while (attempt < maxRetries) {
-            try {
-                return Nats.connect(natsUrl);
-            } catch (IOException e) {
-                attempt++;
-                logger.error("Failed to connect to NATS (attempt {}/{})", attempt, maxRetries);
-
-                if (attempt >= maxRetries) {
-                    throw new IllegalStateException("Could not connect to NATS after " + maxRetries + " attempts", e);
-                }
-                Thread.sleep(delayMs);
-            }
-        }
-        throw new IllegalStateException("Unexpected error: NATS connection logic exited loop");
-    }
-
-    public void publish(String queue, IncomingMessage message) {
+    public NatsPublisher(String natsUrl) {
         try {
-            connection.publish(queue, message.getBytes());
-            logger.info("Published to {}: {}", queue, message);
+            this.js = NatsConnectionUtil.getJetStream(natsUrl);
+            logger.info("Connected to NATS JetStream: {}", natsUrl);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to connect to NATS JetStream", e);
+        }
+    }
 
+    public void publish(String subject, IncomingMessage message) {
+        try {
+            js.publish(subject, message.toString().getBytes(StandardCharsets.UTF_8));
+            logger.info("Published to {}: {}", subject, message);
         } catch (Exception e) {
-            throw new IllegalStateException("Failed to publish message to NATS", e);
+            throw new IllegalStateException("Failed to publish message to JetStream", e);
         }
     }
 }

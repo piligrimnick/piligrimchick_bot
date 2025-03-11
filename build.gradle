@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.telegram:telegrambots-spring-boot-starter:6.8.0'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
   implementation 'org.springframework.boot:spring-boot-starter-logging'
@@ -44,4 +44,3 @@ tasks.register('runTextPipeline', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.piligrimchick.text_pipeline.TextPipelineApplication'
 }
-

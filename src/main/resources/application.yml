@@ -3,7 +3,12 @@ spring:
     name: piligrimchick_bot
 
 bot:
-  token: ${TELEGRAM_BOT_TOKEN}
-  username: ${TELEGRAM_BOT_USERNAME}
-  nats:
-    url: "nats://localhost:4222"
+  token: 7967295162:AAElf8fUi__MI21qlLUwpbue1ImUZDeJwAQ
+  username: piligrimchick_bot
+
+nats:
+  url: 'nats://localhost:4222'
+  textPipeline:
+    subject: 'messages_text'
+    durableName: 'text_pipeline_consumer'
+    queueGroup: 'text_pipeline_group'

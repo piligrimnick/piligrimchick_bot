@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  nats:
+    image: nats:latest
+    container_name: nats-server
+    ports:
+      - "4222:4222"   # Основной порт NATS
+      - "8222:8222"   # Мониторинг NATS (для веб-интерфейса)
+    command: ["-js"]  # Включаем JetStream
+    volumes:
+      - nats_data:/nats_data  # Сохраняем данные JetStream
+    environment:
+      - NATS_SERVER_OPTS=--store_dir=/data --js --max_msgs=100000 --max_bytes=1GB --max_age=24h
+    healthcheck:
+      test: ["CMD", "nats-server", "-V"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  nats_data:
+    driver: local
